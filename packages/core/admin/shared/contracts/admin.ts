@@ -29,7 +29,7 @@ export declare namespace Init {
 }
 
 /**
- * /project-settings - Get the project settings
+ * /project-<settings> - Get the project settings
  */
 export declare namespace GetProjectSettings {
   export interface Request {
@@ -125,6 +125,26 @@ export declare namespace Plugins {
   export interface Response {
     plugins: Plugin[];
     error?: errors.ApplicationError;
+  }
+}
+
+/**
+ * /providers/options - Single Sign On setting options
+ */
+export declare namespace ProvidersOptions {
+  interface SSOProviderOptions {
+    autoRegister: boolean;
+    defaultRole: string | null;
+    ssoLockedRoles: string[] | null;
+  }
+  export interface Request {
+    body: SSOProviderOptions;
+    query: {};
+  }
+
+  export interface Response {
+    data: SSOProviderOptions;
+    error?: errors.ApplicationError | errors.ValidationError | errors.YupValidationError;
   }
 }
 

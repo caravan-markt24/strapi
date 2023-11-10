@@ -4,12 +4,12 @@ import { configureStore } from '@reduxjs/toolkit';
 import { fixtures } from '@strapi/admin-test-utils';
 import { lightTheme, ThemeProvider } from '@strapi/design-system';
 import { useRBAC } from '@strapi/helper-plugin';
-import { fireEvent, getByLabelText, render, waitFor } from '@testing-library/react';
+import { fireEvent, getByLabelText, render, waitFor, screen } from '@testing-library/react';
 import { IntlProvider } from 'react-intl';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 
-import { SingleSignOn } from '../index';
+import { SingleSignOnPage } from '../SingleSignOnPage';
 
 jest.mock('@strapi/helper-plugin', () => ({
   ...jest.requireActual('@strapi/helper-plugin'),
@@ -19,8 +19,8 @@ jest.mock('@strapi/helper-plugin', () => ({
   useFocusWhenNavigate: jest.fn(),
 }));
 
-const setup = (props) =>
-  render(<SingleSignOn {...props} />, {
+const setup = () =>
+  render(<SingleSignOnPage />, {
     wrapper({ children }) {
       const client = new QueryClient({
         defaultOptions: {
@@ -69,34 +69,33 @@ describe('Admin | ee | SettingsPage | SSO', () => {
   });
 
   it('renders and matches the snapshot', async () => {
+    // @ts-expect-error – mocking
     useRBAC.mockImplementation(() => ({
       isLoading: false,
       allowedActions: { canUpdate: true, canReadRoles: true },
     }));
 
-    const { getByText } = setup();
-
-    await waitFor(() =>
-      expect(getByText('Create new user on SSO login if no account exists')).toBeInTheDocument()
-    );
+    expect(
+      screen.getByText('Create new user on SSO login if no account exists')
+    ).toBeInTheDocument();
   });
 
   it('should disable the form when there is no change', async () => {
+    // @ts-expect-error – mocking
     useRBAC.mockImplementation(() => ({
       isLoading: false,
       allowedActions: { canUpdate: true, canReadRoles: true },
     }));
 
-    const { getByTestId, getByText } = setup();
+    expect(
+      screen.getByText('Create new user on SSO login if no account exists')
+    ).toBeInTheDocument();
 
-    await waitFor(() =>
-      expect(getByText('Create new user on SSO login if no account exists')).toBeInTheDocument()
-    );
-
-    expect(getByTestId('save-button')).toHaveAttribute('aria-disabled');
+    expect(screen.getByTestId('save-button')).toHaveAttribute('aria-disabled');
   });
 
   it('should not disable the form when there is a change', async () => {
+    // @ts-expect-error – mocking
     useRBAC.mockImplementation(() => ({
       isLoading: false,
       allowedActions: { canUpdate: true, canReadRoles: true },
@@ -109,8 +108,8 @@ describe('Admin | ee | SettingsPage | SSO', () => {
       return (el = getByLabelText(container, 'autoRegister'));
     });
 
-    fireEvent.click(el);
+    if (el) fireEvent.click(el);
 
-    expect(getByTestId('save-button')).not.toBeDisabled();
+    expect(getByTestId('save-button')).toBeEnabled();
   });
 });
