@@ -2,7 +2,7 @@ import React from 'react';
 
 import { lightTheme, ThemeProvider } from '@strapi/design-system';
 import { NotificationsProvider } from '@strapi/helper-plugin';
-import { render as renderRTL, waitFor } from '@testing-library/react';
+import { render as renderRTL, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
@@ -200,6 +200,7 @@ describe('InputUID', () => {
   });
 
   test('Checks the initial availability (isAvailable)', async () => {
+    jest.useFakeTimers();
     const spy = jest.fn();
 
     const { getByText, queryByText, queryByTestId } = render({
@@ -212,9 +213,16 @@ describe('InputUID', () => {
 
     expect(getByText('Available')).toBeInTheDocument();
 
+    act(() => {
+      jest.advanceTimersByTime(4000);
+    });
+
     await waitFor(() => expect(queryByText('Available')).not.toBeInTheDocument(), {
       timeout: 10000,
     });
+
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
   test('Checks the initial availability (!isAvailable)', async () => {
