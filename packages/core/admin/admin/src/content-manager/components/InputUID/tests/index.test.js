@@ -106,13 +106,15 @@ describe('InputUID', () => {
       labelAction: <>action</>,
     });
 
-    await waitFor(() => expect(getByText('Unavailable')).toBeInTheDocument());
+    await waitFor(() => {
+      expect(getByText('Unavailable')).toBeInTheDocument();
 
-    expect(getByText('Label')).toBeInTheDocument();
-    expect(getByText('*')).toBeInTheDocument();
-    expect(getByText('action')).toBeInTheDocument();
-    expect(getByText('hint')).toBeInTheDocument();
-    expect(getByRole('textbox')).toHaveValue('test');
+      expect(getByText('Label')).toBeInTheDocument();
+      expect(getByText('*')).toBeInTheDocument();
+      expect(getByText('action')).toBeInTheDocument();
+      expect(getByText('hint')).toBeInTheDocument();
+      expect(getByRole('textbox')).toHaveValue('test');
+    });
   });
 
   test('renders an error', async () => {
