@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ThemeProvider, lightTheme } from '@strapi/design-system';
 import { NotificationsProvider } from '@strapi/helper-plugin';
-import { fireEvent, render as renderRTL, waitFor } from '@testing-library/react';
+import { fireEvent, render as renderRTL, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { IntlProvider } from 'react-intl';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -100,6 +100,14 @@ describe('Roles – CreatePage', () => {
 
     fireEvent.click(getByRole('button', { name: 'Save' }));
 
+    jest.useFakeTimers();
+
     await waitFor(() => expect(getByText('Role created')).toBeInTheDocument());
+
+    act(() => {
+      jest.runAllTimers();
+    });
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 });
